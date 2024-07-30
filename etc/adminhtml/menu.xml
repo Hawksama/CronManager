@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Alexandru-Manuel Carabus All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Hawksama_CronManager::cron"
+             title="Cron"
+             module="Hawksama_CronManager"
+             sortOrder="70"
+             resource="Hawksama_CronManager::cronmanager"
+             parent="Magento_Backend::system"/>
+
+        <add id="Hawksama_CronManager::cronlist"
+             sortOrder="10"
+             title="Manage Cron"
+             module="Hawksama_CronManager"
+             parent="Hawksama_CronManager::cron"
+             resource="Hawksama_CronManager::cronmanager"
+             translate="title"
+             action="hawksama/cron/index"/>
+    </menu>
+</config>

@@ -1,0 +1,20 @@
+{
+  "name": "hawksama/module-cron-manager",
+  "version": "1.0.0",
+  "description": "This module manages crons via admin and let admin users run crons from the admin panel without needing cli access.",
+  "type": "magento2-module",
+  "require": {
+    "magento/framework": "*"
+  },
+  "license": [
+    "Proprietary"
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Hawksama\\CronManager\\": ""
+    }
+  }
+}
