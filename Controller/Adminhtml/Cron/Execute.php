@@ -8,8 +8,8 @@ declare(strict_types=1);
 namespace Hawksama\CronManager\Controller\Adminhtml\Cron;
 
 use Hawksama\CronManager\Controller\Adminhtml\AbstractController;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Result\PageFactory;
-use Exception;
 use Magento\Backend\App\Action\Context;
 use Magento\Cron\Model\Schedule;
 use Magento\Cron\Model\ScheduleFactory;
@@ -27,6 +27,7 @@ class Execute extends AbstractController
 {
     /**
      * @param Context $context
+     * @param PageFactory $pageFactory
      * @param Data $helper
      * @param ScheduleFactory $scheduleFactory
      * @param TypeListInterface $cacheTypeList
@@ -48,7 +49,9 @@ class Execute extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * Executes the selected cron jobs and handles the result.
+     *
+     * @throws LocalizedException
      */
     public function execute(): ResponseInterface
     {
@@ -65,7 +68,7 @@ class Execute extends AbstractController
      *
      * @param array $requestParams The request parameters.
      * @return array The result array containing 'success' and 'failure' keys.
-     * @throws Exception
+     * @throws LocalizedException
      */
     public function processSelectedJobs(array $requestParams): array
     {
@@ -107,7 +110,11 @@ class Execute extends AbstractController
             $successNames = implode(', ', $result['success']['crons']);
 
             $this->messageManager->addSuccessMessage(
-                __('A total of %1 record(s) have been executed. Successful cron jobs: %2.', $successTotal, $successNames)
+                __(
+                    'A total of %1 record(s) have been executed. Successful cron jobs: %2.',
+                    $successTotal,
+                    $successNames
+                )
             );
 
             // Log successful executions
@@ -144,10 +151,9 @@ class Execute extends AbstractController
     /**
      * Creates and executes a job.
      *
-     * @param array $jobData The data for the job.
-     * @param array &$result The result of the job execution.
-     * @throws Exception If an error occurs during job execution.
-     * @return void
+     * @param array $jobData
+     * @param array $result
+     * @throws LocalizedException
      */
     public function createAndExecuteJob(array $jobData, array &$result): void
     {
@@ -157,7 +163,7 @@ class Execute extends AbstractController
             $this->cronRepository->executeCronJob($schedule, $jobData);
             $this->updateJobResult($result, true, $jobData['name']);
             $this->saveSchedule($schedule);
-        } catch (Exception $e) {
+        } catch (LocalizedException $e) {
             $this->updateJobResult($result, false, $jobData['name']);
             $this->handleExecutionError($schedule, $e);
         }
@@ -175,8 +181,8 @@ class Execute extends AbstractController
         $data = [
             'job_code'     => $jobData['name'] ?? '',
             'status'       => Schedule::STATUS_SUCCESS,
-            'created_at'   => $this->helper->getTime() ?? '',
-            'scheduled_at' => $this->helper->getTime(true) ?? '',
+            'created_at'   => $this->helper->getTime(),
+            'scheduled_at' => $this->helper->getTime(true),
         ];
 
         return $this->scheduleFactory->create()->setData($data);
@@ -185,10 +191,9 @@ class Execute extends AbstractController
     /**
      * Updates the job result array based on the success status.
      *
-     * @param array &$result The job result array to be updated.
-     * @param bool $success The success status of the job.
-     * @param string $name The name of the cron job.
-     * @return void
+     * @param array $result
+     * @param bool $success
+     * @param string $name
      */
     private function updateJobResult(array &$result, bool $success, string $name): void
     {
@@ -204,16 +209,21 @@ class Execute extends AbstractController
     /**
      * Saves the given schedule to the database.
      *
-     * @param Schedule $schedule The schedule to be saved.
-     * @throws Exception If an error occurs while saving the schedule.
+     * @param Schedule $schedule
+     * @throws LocalizedException
      * @return void
      */
     public function saveSchedule(Schedule $schedule): void
     {
         try {
             $this->resource->save($schedule);
-        } catch (Exception $e) {
+        } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
+            $this->logger->error('CronManager: Error saving schedule', ['exception' => $e]);
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(
+                __('An unexpected error occurred while saving the schedule: %1', $e->getMessage())
+            );
             $this->logger->error('CronManager: Error saving schedule', ['exception' => $e]);
         }
     }
@@ -222,11 +232,11 @@ class Execute extends AbstractController
      * Handles an error that occurred during the execution of a schedule.
      *
      * @param Schedule $schedule The schedule that encountered the error.
-     * @param Exception $e The exception that was thrown.
+     * @param LocalizedException $e The exception that was thrown.
      * @return void
-     * @throws Exception
+     * @throws LocalizedException
      */
-    public function handleExecutionError(Schedule $schedule, Exception $e): void
+    public function handleExecutionError(Schedule $schedule, LocalizedException $e): void
     {
         $this->logger->error('CronManager: Error executing job', ['exception' => $e]);
 

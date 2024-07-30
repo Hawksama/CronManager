@@ -7,13 +7,14 @@ namespace Hawksama\CronManager\Helper;
 
 use Magento\Cron\Model\ConfigInterface;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 
 /**
  * Class Data
- * @package Hawksama\CronManager\Helper
+ * This class provides helper functions for managing cron jobs.
  */
 class Data extends AbstractHelper
 {
@@ -36,14 +37,14 @@ class Data extends AbstractHelper
      *
      * @param string|null $jobName
      * @return array
-     * @throws Exception
+     * @throws NoSuchEntityException
      */
     public function getCronJobs(?string $jobName = null): array
     {
         $cronJobs = $this->cronConfig->getJobs();
 
         if (empty($cronJobs)) {
-            throw new Exception('No cron jobs found');
+            throw new NoSuchEntityException('No cron jobs found');
         }
 
         return $this->filterCronJobs($cronJobs, $jobName);

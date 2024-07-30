@@ -14,6 +14,11 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
  */
 class Cron extends AbstractDb
 {
+    /**
+     * Initializes the resource model by setting the table name and primary key.
+     *
+     * @return void
+     */
     protected function _construct(): void
     {
         $this->_init('cron_schedule', 'schedule_id');

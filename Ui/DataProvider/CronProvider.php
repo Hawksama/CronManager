@@ -6,6 +6,7 @@
 namespace Hawksama\CronManager\Ui\DataProvider;
 
 use Magento\Ui\DataProvider\AbstractDataProvider;
+use Magento\Framework\Exception\LocalizedException;
 use Hawksama\CronManager\Helper\Data;
 
 /**
@@ -24,6 +25,8 @@ class CronProvider extends AbstractDataProvider
      * @param array $data
      * @param int $offset
      * @param int $size
+     * @param string $sortDir
+     * @param string $sortField
      */
     public function __construct(
         $name,
@@ -41,8 +44,11 @@ class CronProvider extends AbstractDataProvider
     }
 
     /**
+     *  Method to set the sort field and direction for data retrieval.
+     *
      * @param string $field
      * @param string $direction
+     * @return void
      */
     public function addOrder($field, $direction): void
     {
@@ -51,8 +57,11 @@ class CronProvider extends AbstractDataProvider
     }
 
     /**
+     * Sets the limit for the data provider.
+     *
      * @param int $offset
      * @param int $size
+     * @return void
      */
     public function setLimit($offset, $size): void
     {
@@ -64,7 +73,7 @@ class CronProvider extends AbstractDataProvider
      * Retrieves data from the helper and returns it in an array with total records and items.
      *
      * @return array{totalRecords: int, items: array}
-     * @throws \Exception
+     * @throws LocalizedException
      */
     public function getData(): array
     {

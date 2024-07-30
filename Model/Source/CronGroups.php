@@ -16,6 +16,7 @@ class CronGroups extends AbstractStatus
      * Group constructor.
      *
      * @param ConfigInterface $cronConfig
+     * @param array|null $options
      */
     public function __construct(
         private readonly ConfigInterface $cronConfig,
@@ -24,17 +25,19 @@ class CronGroups extends AbstractStatus
     }
 
     /**
+     *  Returns an array of options for the group column.
+     *
      * @return array
      */
     public function toOptionArray(): array
     {
-        if (is_null($this->options)) {
+        if ($this->options === null) {
             $this->options = array_map(
                 fn($group) => [
                     'label' => $group,
                     'value' => $group
                 ],
-                array_keys($this->cronConfig->getJobs() ?? [])
+                array_keys($this->cronConfig->getJobs())
             );
         }
 

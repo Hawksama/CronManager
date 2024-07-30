@@ -14,11 +14,11 @@ use Magento\Backend\Model\View\Result\Page;
 
 /**
  * Class AbstractController
- * @package Hawksama\CronManager\Controller\Adminhtml
  */
 abstract class AbstractController extends Action
 {
     /**
+     * @param Context $context
      * @param PageFactory $pageFactory
      */
     public function __construct(
@@ -29,12 +29,13 @@ abstract class AbstractController extends Action
     }
 
     /**
-     * Initializes the page by creating a new instance of the Magento framework's view result page and sets the active menu to 'Hawksama_CronManager::cronlist'.
+     * Initializes and returns a result page with the active menu set.
      *
      * @return Page
      */
     protected function initializePage(): Page
     {
+        /** @var Page $resultPage */
         $resultPage = $this->pageFactory->create();
         $resultPage->setActiveMenu('Hawksama_CronManager::cronlist');
         return $resultPage;

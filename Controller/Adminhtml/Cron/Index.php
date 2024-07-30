@@ -11,7 +11,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Hawksama\CronManager\Controller\Adminhtml\AbstractController;
 
 /**
- * Class Index
+ * This class represents the index controller for the adminhtml cron manager module.
  */
 class Index extends AbstractController
 {
