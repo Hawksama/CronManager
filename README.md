@@ -21,7 +21,7 @@ composer require hawksama/module-cron-manager
 We welcome contributions to the Hawksama CronManager module. If you would like to contribute, please fork the repository and submit a pull request.
 
 ## License
-Hawksama CronManager is open-source software licensed under the Mozilla Public License (MPL).
+Hawksama CronManager is open-source software licensed under the Mozilla Public License 2.0.
 
 ## Support
 If you have any questions or need support, please open an issue on this GitHub repository.

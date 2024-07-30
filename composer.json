@@ -7,7 +7,7 @@
     "magento/framework": "*"
   },
   "license": [
-      "Mozilla Public License (MPL)"
+    "MPL-2.0"
   ],
   "autoload": {
     "files": [
